@@ -1,4 +1,4 @@
-import { addTodo, getAllTodos } from '@/api';
+import { addTodo, deleteTodo, getAllTodos } from '@/api';
 import {afterAll, beforeAll, beforeEach, expect, test} from '@jest/globals';
 import { execSync, spawn } from 'node:child_process';
 import fs from "node:fs/promises";
@@ -100,4 +100,22 @@ test('add a TODO', async () => {
       text: "Test 1"
     }
   ]);
+});
+
+test('delete a TODO', async () => {
+  await fs.writeFile(dbFilePath, JSON.stringify(emptyData));
+
+  serverProcess = spawn('npm', ['run', 'json-server'], { stdio: 'pipe', shell: true });
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const stdout = execSync(`lsof -i :3001 -t`).toString().trim();
+  if (stdout) {
+    serverPid = parseInt(stdout, 10);
+  }
+
+  const actual = await deleteTodo({
+    id: "1",
+    text: "Test 1"
+  });
+
+  expect(actual).toBeUndefined();
 });

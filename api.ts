@@ -20,3 +20,12 @@ export const addTodo = async (todo: ITask): Promise<ITask> => {
   const newTodo = await res.json();
   return newTodo;
 }
+
+export const deleteTodo = async (todo: ITask): Promise<void> => {
+  await fetch(`${baseUrl}/tasks/${todo.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+}
